@@ -1,0 +1,904 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MediCare Reminder - รายชื่อผู้ป่วย</title>
+  <link rel="icon" type="image/png" href="favicon.png">
+  <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary-color: #00897b;
+      --primary-dark: #005b4f;
+      --primary-light: #4ebaaa;
+      --secondary-color: #e0f2f1;
+      --background-color: #f5f5f5;
+      --text-color: #333333;
+      --border-color: #dddddd;
+      --error-color: #f44336;
+      --success-color: #4caf50;
+      --warning-color: #ff9800;
+      --shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Kanit', sans-serif;
+    }
+
+    body {
+      background-color: var(--background-color);
+      color: var(--text-color);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    header {
+      background-color: var(--primary-color);
+      color: white;
+      padding: 15px 0;
+      box-shadow: var(--shadow);
+    }
+
+    .header-content {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 20px;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 1.5rem;
+      font-weight: 500;
+      text-decoration: none;
+      color: white;
+    }
+
+    .logo-icon {
+      background-color: white;
+      color: var(--primary-color);
+      width: 40px;
+      height: 40px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+      font-size: 24px;
+    }
+
+    /* ปรับแต่งส่วนมุมขวามือ */
+    .user-menu {
+      display: flex;
+      align-items: center;
+    }
+
+    /* สร้างปุ่มกลมสีขาวมุมขวาบน */
+    .user-circle {
+      width: 40px;
+      height: 40px;
+      background-color: white;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--primary-color);
+      font-weight: bold;
+      font-size: 20px;
+      cursor: pointer;
+    }
+
+    .nav-container {
+      background-color: white;
+      box-shadow: var(--shadow);
+    }
+
+    nav {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0;
+      display: flex;
+    }
+
+    nav a {
+      color: var(--text-color);
+      text-decoration: none;
+      padding: 15px 20px;
+      position: relative;
+      font-weight: 500;
+      white-space: nowrap;
+    }
+
+    nav a.active {
+      color: var(--primary-color);
+      border-bottom: 4px solid var(--primary-color);
+    }
+
+    main {
+      flex-grow: 1;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 20px;
+      width: 100%;
+    }
+
+    .page-title {
+      font-size: 2rem;
+      color: var(--text-color);
+      margin: 20px 0;
+      font-weight: 600;
+    }
+
+    /* ปรับรูปแบบส่วนค้นหา */
+    .search-container {
+      background-color: white;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: var(--shadow);
+      margin-bottom: 25px;
+      display: flex;
+      gap: 15px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    .search-input {
+      flex: 1;
+      min-width: 250px;
+      padding: 12px 15px;
+      border: 1px solid var(--border-color);
+      border-radius: 6px;
+      font-size: 1rem;
+      transition: border-color 0.3s;
+    }
+
+    .search-input:focus {
+      border-color: var(--primary-color);
+      outline: none;
+    }
+
+    .filter-select {
+      min-width: 180px;
+      padding: 12px 15px;
+      border: 1px solid var(--border-color);
+      border-radius: 6px;
+      font-size: 1rem;
+      appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='%23333' viewBox='0 0 16 16'%3E%3Cpath d='M7.247 11.14 2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: calc(100% - 15px) center;
+      padding-right: 35px;
+      cursor: pointer;
+      transition: border-color 0.3s;
+    }
+
+    .filter-select:focus {
+      border-color: var(--primary-color);
+      outline: none;
+    }
+
+    .search-button {
+      padding: 12px 25px;
+      background-color: var(--primary-color);
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 1rem;
+      font-weight: 500;
+      transition: background-color 0.3s;
+    }
+
+    .search-button:hover {
+      background-color: var(--primary-dark);
+    }
+
+    /* ปรับแต่งตาราง */
+    .patients-table-container {
+      background-color: white;
+      border-radius: 10px;
+      box-shadow: var(--shadow);
+      overflow: hidden;
+      margin-bottom: 25px;
+    }
+
+    .patients-table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    .patients-table th,
+    .patients-table td {
+      padding: 15px;
+      text-align: left;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    .patients-table th {
+      background-color: #f9f9f9;
+      font-weight: 500;
+      color: #666;
+    }
+
+    .patients-table tr:last-child td {
+      border-bottom: none;
+    }
+
+    .patients-table tr:hover {
+      background-color: #f6f9f9;
+    }
+
+    /* ปรับแต่งปุ่มในตาราง */
+    .btn {
+      display: inline-block;
+      padding: 8px 15px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 0.9rem;
+      font-weight: 500;
+      text-decoration: none;
+      text-align: center;
+      transition: all 0.3s;
+      border: 1px solid transparent;
+    }
+
+    .btn-view {
+      background-color: white;
+      color: var(--primary-color);
+      border: 1px solid var(--primary-color);
+    }
+
+    .btn-view:hover {
+      background-color: #f0f7f7;
+    }
+
+    .btn-primary {
+      background-color: var(--primary-color);
+      color: white;
+    }
+
+    .btn-primary:hover {
+      background-color: var(--primary-dark);
+    }
+
+    /* ปรับแต่งการแบ่งหน้า */
+    .pagination {
+      display: flex;
+      justify-content: center;
+      gap: 8px;
+      margin: 25px 0;
+    }
+
+    .pagination-button {
+      width: 40px;
+      height: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background-color: white;
+      border: 1px solid var(--border-color);
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 1rem;
+      transition: all 0.3s;
+    }
+
+    .pagination-button:hover {
+      border-color: var(--primary-color);
+      color: var(--primary-color);
+    }
+
+    .pagination-button.active {
+      background-color: var(--primary-color);
+      color: white;
+      border-color: var(--primary-color);
+    }
+
+    .pagination-button[disabled] {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    /* ปรับแต่ง footer */
+    .footer-info {
+      background-color: white;
+      padding: 15px 20px;
+      border-radius: 10px;
+      box-shadow: var(--shadow);
+      font-size: 0.95rem;
+      color: #666;
+      text-align: center;
+    }
+
+    /* สำหรับการแสดงการโหลด */
+    .loading {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 200px;
+    }
+
+    .loading:after {
+      content: " ";
+      display: block;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      border: 6px solid var(--primary-color);
+      border-color: var(--primary-color) transparent var(--primary-color) transparent;
+      animation: loading 1.2s linear infinite;
+    }
+
+    @keyframes loading {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    /* ข้อความแสดงเมื่อเกิดข้อผิดพลาด */
+    .error-message {
+      background-color: #ffebee;
+      color: var(--error-color);
+      padding: 15px 20px;
+      border-radius: 6px;
+      text-align: center;
+      margin: 20px 0;
+    }
+
+    /* Media queries */
+    @media (max-width: 768px) {
+      .search-container {
+        flex-direction: column;
+      }
+
+      .search-input, .filter-select, .search-button {
+        width: 100%;
+      }
+
+      .patients-table {
+        display: block;
+        overflow-x: auto;
+      }
+
+      .pagination {
+        flex-wrap: wrap;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="header-content">
+      <a href="dashboard.html" class="logo">
+        <div class="logo-icon">M</div>
+        <span>MediCare Reminder</span>
+      </a>
+      <div class="user-menu">
+        <div class="user-circle">ส</div>
+      </div>
+    </div>
+  </header>
+
+  <div class="nav-container">
+    <nav>
+      <a href="dashboard.html">หน้าหลัก</a>
+      <a href="patients.html" class="active">รายชื่อผู้ป่วย</a>
+      <a href="medications.html">สั่งยา</a>
+      <a href="history.html">ประวัติการรักษา</a>
+      <a href="reports.html">รายงาน</a>
+      <a href="settings.html">ตั้งค่า</a>
+    </nav>
+  </div>
+
+  <main>
+    <h1 class="page-title">รายชื่อผู้ป่วย</h1>
+
+    <div class="search-container">
+      <input type="text" id="search-input" class="search-input" placeholder="ค้นหาชื่อผู้ป่วยหรือรหัส HN...">
+      <select id="department-filter" class="filter-select">
+        <option value="">แผนก: ทั้งหมด</option>
+        <option value="อายุรกรรม">อายุรกรรม</option>
+        <option value="ศัลยกรรม">ศัลยกรรม</option>
+        <option value="กุมารเวชกรรม">กุมารเวชกรรม</option>
+        <option value="สูตินรีเวชกรรม">สูตินรีเวชกรรม</option>
+        <option value="จิตเวชศาสตร์">จิตเวชศาสตร์</option>
+      </select>
+      <select id="date-filter" class="filter-select">
+        <option value="today">วันที่: วันนี้</option>
+        <option value="tomorrow">พรุ่งนี้</option>
+        <option value="yesterday">เมื่อวาน</option>
+        <option value="week">ภายใน 7 วัน</option>
+        <option value="month">ภายใน 30 วัน</option>
+        <option value="all">ทั้งหมด</option>
+      </select>
+      <button id="search-button" class="search-button">ค้นหา</button>
+    </div>
+
+    <div id="patients-table-container" class="patients-table-container">
+      <table class="patients-table">
+        <thead>
+          <tr>
+            <th>ชื่อ-นามสกุล</th>
+            <th>HN</th>
+            <th>อายุ</th>
+            <th>เพศ</th>
+            <th>แผนก</th>
+            <th>สิทธิการรักษา</th>
+            <th>การจัดการ</th>
+          </tr>
+        </thead>
+        <tbody id="patients-tbody">
+          <!-- ข้อมูลผู้ป่วยตัวอย่าง -->
+          <tr>
+            <td>สมหญิง รักษาดี</td>
+            <td>65432110</td>
+            <td>43 ปี</td>
+            <td>หญิง</td>
+            <td>อายุรกรรม</td>
+            <td>ประกันสังคม</td>
+            <td>
+              <button class="btn btn-view" onclick="viewPatient('1')">ดูข้อมูล</button>
+              <button class="btn btn-primary" onclick="prescribeMedication('1')">สั่งยา</button>
+            </td>
+          </tr>
+          <tr>
+            <td>สมศักดิ์ โรดี</td>
+            <td>65432111</td>
+            <td>50 ปี</td>
+            <td>ชาย</td>
+            <td>อายุรกรรม</td>
+            <td>ประกันสังคม</td>
+            <td>
+              <button class="btn btn-view" onclick="viewPatient('2')">ดูข้อมูล</button>
+              <button class="btn btn-primary" onclick="prescribeMedication('2')">สั่งยา</button>
+            </td>
+          </tr>
+          <tr>
+            <td>สมชาย โรดี</td>
+            <td>65432101</td>
+            <td>60 ปี</td>
+            <td>ชาย</td>
+            <td>อายุรกรรม</td>
+            <td>ประกันสังคม</td>
+            <td>
+              <button class="btn btn-view" onclick="viewPatient('3')">ดูข้อมูล</button>
+              <button class="btn btn-primary" onclick="prescribeMedication('3')">สั่งยา</button>
+            </td>
+          </tr>
+          <tr>
+            <td>รัตนา สุขใจ</td>
+            <td>65432112</td>
+            <td>35 ปี</td>
+            <td>หญิง</td>
+            <td>อายุรกรรม</td>
+            <td>ประกันสังคม</td>
+            <td>
+              <button class="btn btn-view" onclick="viewPatient('4')">ดูข้อมูล</button>
+              <button class="btn btn-primary" onclick="prescribeMedication('4')">สั่งยา</button>
+            </td>
+          </tr>
+          <tr>
+            <td>สมศักดิ์ โรดี</td>
+            <td>65432111</td>
+            <td>50 ปี</td>
+            <td>ชาย</td>
+            <td>อายุรกรรม</td>
+            <td>ประกันสังคม</td>
+            <td>
+              <button class="btn btn-view" onclick="viewPatient('5')">ดูข้อมูล</button>
+              <button class="btn btn-primary" onclick="prescribeMedication('5')">สั่งยา</button>
+            </td>
+          </tr>
+          <tr>
+            <td>รัตนา สุขใจ</td>
+            <td>65432112</td>
+            <td>35 ปี</td>
+            <td>หญิง</td>
+            <td>อายุรกรรม</td>
+            <td>ประกันสังคม</td>
+            <td>
+              <button class="btn btn-view" onclick="viewPatient('6')">ดูข้อมูล</button>
+              <button class="btn btn-primary" onclick="prescribeMedication('6')">สั่งยา</button>
+            </td>
+          </tr>
+          <tr>
+            <td>สมบัติ มั่งมี</td>
+            <td>65432113</td>
+            <td>57 ปี</td>
+            <td>ชาย</td>
+            <td>อายุรกรรม</td>
+            <td>ประกันสังคม</td>
+            <td>
+              <button class="btn btn-view" onclick="viewPatient('7')">ดูข้อมูล</button>
+              <button class="btn btn-primary" onclick="prescribeMedication('7')">สั่งยา</button>
+            </td>
+          </tr>
+          <tr>
+            <td>นาที มีสุข</td>
+            <td>654321005</td>
+            <td>55 ปี</td>
+            <td>หญิง</td>
+            <td>อายุรกรรม</td>
+            <td>ประกันสังคม</td>
+            <td>
+              <button class="btn btn-view" onclick="viewPatient('8')">ดูข้อมูล</button>
+              <button class="btn btn-primary" onclick="prescribeMedication('8')">สั่งยา</button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="pagination" id="pagination-container">
+      <button class="pagination-button" disabled><span>&laquo;</span></button>
+      <button class="pagination-button active">1</button>
+      <button class="pagination-button">2</button>
+      <button class="pagination-button">3</button>
+      <button class="pagination-button"><span>&raquo;</span></button>
+    </div>
+
+    <div class="footer-info" id="footer-info">
+      วันที่: จันทร์ 17 มีนาคม 2568 | จำนวนผู้ป่วยวันนี้: 8 คน | นัดวันนี้: 8 คน
+    </div>
+  </main>
+
+  <script>
+    // ตัวแปรสำหรับเก็บข้อมูล token และ API URL
+    const API_URL = 'http://127.0.0.1:3000/api';
+    let token = localStorage.getItem('token') || 'demo-token'; // ใช้ demo-token หากไม่มี token ในระบบ
+    let currentUser = null;
+    let currentPage = 1;
+    let patientsPerPage = 10;
+    let totalPatients = 0;
+    let totalPages = 0;
+    let lastSelectedDate = 'today';
+    
+    // ฟังก์ชันสำหรับตรวจสอบว่ามีการล็อกอินหรือไม่
+    function checkAuth() {
+      if (!token) {
+        window.location.href = 'index.html';
+        return false;
+      }
+      return true;
+    }
+
+    // ฟังก์ชันสำหรับเรียกใช้ API
+    async function callAPI(endpoint, method = 'GET', data = null) {
+      try {
+        const options = {
+          method,
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+          }
+        };
+
+        if (data && (method === 'POST' || method === 'PUT')) {
+          options.body = JSON.stringify(data);
+        }
+
+        const response = await fetch(`${API_URL}${endpoint}`, options);
+        
+        if (response.status === 401) {
+          // Token หมดอายุหรือไม่ถูกต้อง
+          localStorage.removeItem('token');
+          localStorage.removeItem('user');
+          window.location.href = 'index.html';
+          return null;
+        }
+
+        return await response.json();
+      } catch (error) {
+        console.error('API Error:', error);
+        return { error: 'เกิดข้อผิดพลาดในการเชื่อมต่อกับเซิร์ฟเวอร์' };
+      }
+    }
+
+    // ฟังก์ชันสำหรับการแปลงวันที่เป็น YYYY-MM-DD
+    function formatDateForAPI(date) {
+      const year = date.getFullYear();
+      const month = String(date.getMonth() + 1).padStart(2, '0');
+      const day = String(date.getDate()).padStart(2, '0');
+      return `${year}-${month}-${day}`;
+    }
+
+    // ฟังก์ชันสำหรับการรับ API endpoint ตามที่เลือกจากตัวกรอง
+    function getEndpointByDateFilter() {
+      const dateFilter = document.getElementById('date-filter').value;
+      lastSelectedDate = dateFilter;
+      
+      switch (dateFilter) {
+        case 'today':
+          return '/patients/appointments/today';
+        case 'tomorrow':
+          // สำหรับวันพรุ่งนี้ เราใช้ date endpoint ด้วยวันที่พรุ่งนี้
+          const tomorrow = new Date();
+          tomorrow.setDate(tomorrow.getDate() + 1);
+          const tomorrowStr = formatDateForAPI(tomorrow);
+          return `/patients/appointments/date/${tomorrowStr}`;
+        case 'yesterday':
+          // สำหรับเมื่อวาน เราใช้ date endpoint ด้วยวันที่เมื่อวาน
+          const yesterday = new Date();
+          yesterday.setDate(yesterday.getDate() - 1);
+          const yesterdayStr = formatDateForAPI(yesterday);
+          return `/patients/appointments/date/${yesterdayStr}`;
+        case 'week':
+          return '/patients/appointments/week';
+        case 'month':
+          return '/patients/appointments/month';
+        case 'all':
+          // ดึงผู้ป่วยทั้งหมด
+          return '/patients';
+        default:
+          return '/patients/appointments/today';
+      }
+    }
+
+    // ฟังก์ชันสำหรับดึงรายชื่อผู้ป่วย
+    async function getPatients() {
+      // แสดงการโหลด
+      document.getElementById('patients-tbody').innerHTML = `
+        <tr>
+          <td colspan="7" style="text-align: center;">
+            <div class="loading"></div>
+          </td>
+        </tr>
+      `;
+
+      // ดึงค่าจากฟิลเตอร์
+      const searchText = document.getElementById('search-input').value;
+      const department = document.getElementById('department-filter').value;
+
+      try {
+        // สร้าง query parameters
+        const params = new URLSearchParams();
+        if (searchText) params.append('search', searchText);
+        if (department) params.append('department', department);
+        params.append('page', currentPage);
+        params.append('limit', patientsPerPage);
+
+        // รับ API endpoint ตามวันที่ที่เลือก
+        const endpoint = getEndpointByDateFilter();
+        
+        // เรียกใช้ API
+        const result = await callAPI(`${endpoint}?${params.toString()}`);
+
+        if (result && result.error) {
+          // แสดงข้อความเมื่อมีข้อผิดพลาด
+          document.getElementById('patients-tbody').innerHTML = `
+            <tr>
+              <td colspan="7">
+                <div class="error-message">
+                  ไม่สามารถโหลดข้อมูลผู้ป่วยได้ กรุณาลองใหม่อีกครั้ง
+                </div>
+              </td>
+            </tr>
+          `;
+          return;
+        }
+
+        // แสดงข้อมูลผู้ป่วย
+        const patients = result.patients || [];
+        showPatients(patients);
+        
+        // อัปเดตข้อมูลการแบ่งหน้า
+        totalPatients = result.count || patients.length;
+        totalPages = Math.ceil(totalPatients / patientsPerPage);
+        updatePagination(totalPatients, patientsPerPage);
+        
+        // อัปเดตข้อมูลใน footer
+        updateFooterInfo(totalPatients);
+      } catch (error) {
+        console.error('Error fetching patients:', error);
+        
+        // แสดงข้อความเมื่อเกิดข้อผิดพลาด
+        document.getElementById('patients-tbody').innerHTML = `
+          <tr>
+            <td colspan="7">
+              <div class="error-message">
+                ไม่สามารถโหลดข้อมูลผู้ป่วยได้ กรุณาลองใหม่อีกครั้ง
+              </div>
+            </td>
+          </tr>
+        `;
+      }
+    }
+
+    // ฟังก์ชันสำหรับแสดงรายชื่อผู้ป่วย
+    function showPatients(patients) {
+      const tbodyElement = document.getElementById('patients-tbody');
+      
+      if (!patients || patients.length === 0) {
+        tbodyElement.innerHTML = `
+          <tr>
+            <td colspan="7" style="text-align: center; padding: 30px;">
+              ไม่พบข้อมูลผู้ป่วย
+            </td>
+          </tr>
+        `;
+        return;
+      }
+      
+      // สร้าง HTML สำหรับแต่ละผู้ป่วย
+      const patientsHTML = patients.map(patient => `
+        <tr>
+          <td>${patient.fullName || `${patient.firstName || ''} ${patient.lastName || ''}`}</td>
+          <td>${patient.hn || '-'}</td>
+          <td>${patient.age || '-'} ปี</td>
+          <td>${patient.gender === 'MALE' ? 'ชาย' : 'หญิง'}</td>
+          <td>${patient.department || 'อายุรกรรม'}</td>
+          <td>${patient.insurance || 'ประกันสังคม'}</td>
+          <td>
+            <button class="btn btn-view" onclick="viewPatient('${patient.id}')">ดูข้อมูล</button>
+            <button class="btn btn-primary" onclick="prescribeMedication('${patient.id}')">สั่งยา</button>
+          </td>
+        </tr>
+      `).join('');
+      
+      tbodyElement.innerHTML = patientsHTML;
+    }
+
+    // ฟังก์ชันสำหรับอัปเดตข้อมูลที่ footer
+    function updateFooterInfo(totalCount) {
+      // กำหนดชื่อช่วงเวลาที่จะแสดงใน footer ตามวันที่ที่เลือก
+      let periodText = "ทั้งหมด";
+      switch (lastSelectedDate) {
+        case 'today':
+          periodText = "วันนี้";
+          break;
+          case 'tomorrow':
+          periodText = "พรุ่งนี้";
+          break;  
+        case 'yesterday':
+          periodText = "เมื่อวาน";
+          break;
+        case 'week':
+          periodText = "ภายใน 7 วัน";
+          break;
+        case 'month':
+          periodText = "ภายใน 30 วัน";
+          break;
+      }
+      
+      // อัปเดตข้อมูลที่ footer
+      document.getElementById('footer-info').textContent = `วันที่: ${getCurrentDate()} | จำนวนผู้ป่วย${periodText}: ${totalCount} คน | นัดวันนี้: ${lastSelectedDate === 'today' ? totalCount : '-'} คน`;
+    }
+    
+    // ฟังก์ชันสำหรับอัปเดตการแบ่งหน้า
+    function updatePagination(total, limit) {
+      const paginationContainer = document.getElementById('pagination-container');
+      const totalPages = Math.ceil(total / limit);
+      
+      if (totalPages <= 1) {
+        paginationContainer.innerHTML = '';
+        return;
+      }
+      
+      let paginationHTML = '';
+      
+      // ปุ่มก่อนหน้า
+      paginationHTML += `
+        <button class="pagination-button" ${currentPage === 1 ? 'disabled' : ''} onclick="changePage(${currentPage - 1})">
+          <span>&laquo;</span>
+        </button>
+      `;
+      
+      // ปุ่มหน้า
+      for (let i = 1; i <= totalPages; i++) {
+        if (
+          i === 1 || i === totalPages || 
+          (i >= currentPage - 1 && i <= currentPage + 1)
+        ) {
+          paginationHTML += `
+            <button class="pagination-button ${i === currentPage ? 'active' : ''}" onclick="changePage(${i})">
+              ${i}
+            </button>
+          `;
+        } else if (i === currentPage - 2 || i === currentPage + 2) {
+          paginationHTML += `<button class="pagination-button">...</button>`;
+        }
+      }
+      
+      // ปุ่มถัดไป
+      paginationHTML += `
+        <button class="pagination-button" ${currentPage === totalPages ? 'disabled' : ''} onclick="changePage(${currentPage + 1})">
+          <span>&raquo;</span>
+        </button>
+      `;
+      
+      paginationContainer.innerHTML = paginationHTML;
+    }
+
+    // ฟังก์ชันสำหรับเปลี่ยนหน้า
+    function changePage(page) {
+      if (page < 1 || page > totalPages) return;
+      
+      currentPage = page;
+      getPatients();
+      
+      // เลื่อนไปด้านบนของตาราง
+      document.getElementById('patients-table-container').scrollIntoView({ behavior: 'smooth' });
+    }
+
+    // ฟังก์ชันสำหรับเปิดหน้าข้อมูลผู้ป่วย
+    function viewPatient(patientId) {
+      window.location.href = `patient.html?id=${patientId}`;
+    }
+
+    // ฟังก์ชันสำหรับไปยังหน้าสั่งยา
+    function prescribeMedication(patientId) {
+      window.location.href = `prescribe.html?patientId=${patientId}`;
+    }
+
+    // ฟังก์ชันสำหรับรับวันที่ปัจจุบันในรูปแบบภาษาไทย
+    function getCurrentDate() {
+      const days = ['อาทิตย์', 'จันทร์', 'อังคาร', 'พุธ', 'พฤหัสบดี', 'ศุกร์', 'เสาร์'];
+      const months = [
+        'มกราคม', 'กุมภาพันธ์', 'มีนาคม', 'เมษายน', 'พฤษภาคม', 'มิถุนายน',
+        'กรกฎาคม', 'สิงหาคม', 'กันยายน', 'ตุลาคม', 'พฤศจิกายน', 'ธันวาคม'
+      ];
+      
+      const now = new Date();
+      const day = days[now.getDay()];
+      const date = now.getDate();
+      const month = months[now.getMonth()];
+      const year = now.getFullYear() + 543; // แปลงเป็นปี พ.ศ.
+      
+      return `${day} ${date} ${month} ${year}`;
+    }
+
+    // เมื่อโหลดหน้าเสร็จ
+    document.addEventListener('DOMContentLoaded', function() {
+      // ตรวจสอบการล็อกอิน
+      if (!checkAuth()) return;
+      
+      try {
+        // เพิ่ม event listener สำหรับปุ่มค้นหา
+        document.getElementById('search-button').addEventListener('click', function() {
+          currentPage = 1; // รีเซ็ตไปหน้าแรกเมื่อมีการค้นหาใหม่
+          getPatients();
+        });
+        
+        // เพิ่ม event listener สำหรับการเปลี่ยนค่าในตัวกรองวันที่
+        document.getElementById('date-filter').addEventListener('change', function() {
+          currentPage = 1; // รีเซ็ตไปหน้าแรก
+          getPatients();
+        });
+        
+        // เพิ่ม event listener สำหรับการกด Enter ในช่องค้นหา
+        document.getElementById('search-input').addEventListener('keypress', function(e) {
+          if (e.key === 'Enter') {
+            currentPage = 1;
+            getPatients();
+          }
+        });
+        
+        // อัปเดตข้อมูลใน footer เมื่อโหลดหน้า
+        updateFooterInfo(8); // เริ่มต้นที่ 8 คน
+        
+        // ดึงรายชื่อผู้ป่วย - ปิดการดึงข้อมูลจริงไว้ก่อนเพื่อแสดงข้อมูลตัวอย่าง
+        // getPatients();
+        
+      } catch (error) {
+        console.error('Error initializing patients page:', error);
+        document.getElementById('patients-tbody').innerHTML = `
+          <tr>
+            <td colspan="7">
+              <div class="error-message">
+                เกิดข้อผิดพลาดในการโหลดหน้า กรุณารีเฟรชหรือลองใหม่อีกครั้ง
+              </div>
+            </td>
+          </tr>
+        `;
+      }
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MediCare Reminder - แดชบอร์ด</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            background-color: #f8f9fa;
+            font-family: 'Sarabun', sans-serif;
+            padding-bottom: 60px;
+        }
+        .dashboard-card:hover {
+            transform: translateY(-5px);
+        }
+        .fixed-bottom-nav {
+            background-color: white;
+            box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm">
+        <div class="container">
+            <a class="navbar-brand" href="#">
+                <i class="fas fa-pills"></i> MediCare Reminder
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link active" href="#" id="userNameDisplay"></a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#" id="logoutBtn">
+                            <i class="fas fa-sign-out-alt"></i> ออกจากระบบ
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+    <div class="container main-container">
+        <div class="alert alert-message" id="alertMessage" role="alert"></div>
+        <div id="dashboardSection">
+            <div class="welcome-card">
+                <h4>สวัสดี, <span id="welcomeName">คุณ</span></h4>
+                <p>ยินดีต้อนรับเข้าสู่ MediCare Reminder</p>
+            </div>
+            <div class="row">
+                <div class="col-md-6 col-lg-4">
+                    <div class="dashboard-card" id="btnReminders">
+                        <div class="card-icon">
+                            <i class="fas fa-bell"></i>
+                        </div>
+                        <h5>การแจ้งเตือน</h5>
+                        <p>ดูและจัดการการแจ้งเตือนทั้งหมด</p>
+                    </div>
+                </div>
+                <div class="col-md-6 col-lg-4">
+                    <div class="dashboard-card" id="btnHistory">
+                        <div class="card-icon">
+                            <i class="fas fa-history"></i>
+                        </div>
+                        <h5>ประวัติการใช้ยา</h5>
+                        <p>ดูประวัติการใช้ยาและการปฏิบัติตาม</p>
+                    </div>
+                </div>
+                <div class="col-md-6 col-lg-4">
+                    <div class="dashboard-card" id="btnProfile">
+                        <div class="card-icon">
+                            <i class="fas fa-user"></i>
+                        </div>
+                        <h5>โปรไฟล์</h5>
+                        <p>จัดการข้อมูลโปรไฟล์ส่วนตัว</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <nav class="fixed-bottom fixed-bottom-nav">
+        <div class="container">
+            <div class="row">
+                <div class="col-6">
+                    <a class="nav-link active" href="#" id="navHome">
+                        <i class="fas fa-home"></i> หน้าหลัก
+                    </a>
+                </div>
+                <div class="col-6">
+                    <a class="nav-link" href="#" id="navProfile">
+                        <i class="fas fa-user"></i> โปรไฟล์
+                    </a>
+                </div>
+            </div>
+        </div>
+    </nav>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const userNameDisplay = document.getElementById("userNameDisplay");
+            const welcomeName = document.getElementById("welcomeName");
+            const user = JSON.parse(localStorage.getItem("user")) || { name: "Guest" };
+            userNameDisplay.textContent = user.name;
+            welcomeName.textContent = user.name;
+
+            document.getElementById("logoutBtn").addEventListener("click", function () {
+                localStorage.removeItem("user");
+                window.location.href = "index.html";
+            });
+
+            document.getElementById("navHome").addEventListener("click", function () {
+                document.getElementById("dashboardSection").style.display = "block";
+            });
+
+            document.getElementById("navProfile").addEventListener("click", function () {
+                document.getElementById("dashboardSection").style.display = "none";
+            });
+        });
+    </script>
+</body>
+</html>

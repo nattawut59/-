@@ -1,0 +1,1693 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MediCare Reminder - ประวัติการรักษา</title>
+  <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary-color: #00897b;
+      --primary-dark: #005b4f;
+      --primary-light: #4ebaaa;
+      --secondary-color: #e0f2f1;
+      --background-color: #f5f5f5;
+      --text-color: #333333;
+      --error-color: #f44336;
+      --success-color: #4caf50;
+      --warning-color: #ff9800;
+      --shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Kanit', sans-serif;
+    }
+
+    body {
+      background-color: var(--background-color);
+      color: var(--text-color);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    header {
+      background-color: var(--primary-color);
+      color: white;
+      padding: 15px 0;
+      box-shadow: var(--shadow);
+    }
+
+    .header-content {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 20px;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 1.5rem;
+      font-weight: bold;
+      text-decoration: none;
+      color: white;
+    }
+
+    .logo-icon {
+      background-color: white;
+      color: var(--primary-color);
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+      font-size: 24px;
+    }
+
+    .user-menu {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
+
+    .user-profile {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .user-avatar {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background-color: white;
+      color: var(--primary-color);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+    }
+
+    .nav-container {
+      background-color: white;
+      box-shadow: var(--shadow);
+    }
+
+    nav {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 20px;
+      display: flex;
+      overflow-x: auto;
+    }
+
+    nav a {
+      color: var(--text-color);
+      text-decoration: none;
+      padding: 15px 20px;
+      position: relative;
+      font-weight: 500;
+      white-space: nowrap;
+    }
+
+    nav a.active {
+      color: var(--primary-color);
+    }
+
+    nav a.active::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: 3px;
+      background-color: var(--primary-color);
+    }
+
+    main {
+      flex-grow: 1;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 20px;
+      width: 100%;
+    }
+
+    h1 {
+      color: var(--primary-color);
+      font-size: 2rem;
+      margin-bottom: 20px;
+    }
+
+    .search-box {
+      background-color: white;
+      border-radius: 8px;
+      box-shadow: var(--shadow);
+      padding: 20px;
+      margin-bottom: 20px;
+    }
+
+    .search-form {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 15px;
+      margin-bottom: 15px;
+    }
+
+    .search-group {
+      flex: 1;
+      min-width: 200px;
+    }
+
+    .search-group label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: 500;
+    }
+
+    .search-group input,
+    .search-group select {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      font-size: 1rem;
+    }
+
+    .search-button {
+      display: flex;
+      justify-content: flex-end;
+      margin-top: 10px;
+    }
+
+    .btn {
+      padding: 10px 20px;
+      border-radius: 4px;
+      font-weight: 500;
+      cursor: pointer;
+      border: none;
+      text-align: center;
+      text-decoration: none;
+    }
+
+    .btn-primary {
+      background-color: var(--primary-color);
+      color: white;
+    }
+
+    .btn-primary:hover {
+      background-color: var(--primary-dark);
+    }
+
+    .patient-card {
+      background-color: white;
+      border-radius: 8px;
+      box-shadow: var(--shadow);
+      padding: 20px;
+      margin-bottom: 20px;
+    }
+
+    .patient-header {
+      margin-bottom: 20px;
+    }
+
+    .patient-name {
+      font-size: 1.5rem;
+      font-weight: 500;
+      margin-bottom: 5px;
+    }
+
+    .patient-info {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 20px;
+      color: #666;
+    }
+
+    .patient-condition {
+      margin-top: 10px;
+    }
+
+    .condition-tag {
+      display: inline-block;
+      background-color: #f0f0f0;
+      padding: 5px 15px;
+      border-radius: 20px;
+      font-size: 0.9rem;
+      margin-right: 10px;
+      margin-bottom: 10px;
+    }
+
+    .condition-diabetes {
+      background-color: #e3f2fd;
+      color: #1976d2;
+    }
+
+    .condition-hypertension {
+      background-color: #fff8e1;
+      color: #ff8f00;
+    }
+
+    .condition-cardio {
+      background-color: #ffebee;
+      color: #d32f2f;
+    }
+
+    .action-buttons {
+      display: flex;
+      gap: 10px;
+      margin-top: 20px;
+    }
+
+    .tabs {
+      display: flex;
+      margin-top: 20px;
+      border-bottom: 1px solid #ddd;
+      overflow-x: auto;
+    }
+
+    .tab {
+      padding: 10px 20px;
+      cursor: pointer;
+      border: none;
+      background: none;
+      font-size: 1rem;
+      font-weight: 500;
+      color: #666;
+      position: relative;
+      white-space: nowrap;
+    }
+
+    .tab.active {
+      color: var(--primary-color);
+    }
+
+    .tab.active::after {
+      content: '';
+      position: absolute;
+      bottom: -1px;
+      left: 0;
+      width: 100%;
+      height: 2px;
+      background-color: var(--primary-color);
+    }
+
+    .tab-content {
+      display: none;
+      margin-top: 20px;
+    }
+
+    .tab-content.active {
+      display: block;
+    }
+
+    .medication-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 10px;
+    }
+
+    .medication-table th,
+    .medication-table td {
+      padding: 12px 15px;
+      text-align: left;
+      border-bottom: 1px solid #f2f2f2;
+    }
+
+    .medication-table th {
+      font-weight: 500;
+      color: #666;
+      border-bottom: 2px solid #eee;
+    }
+
+    .medication-table tbody tr:hover {
+      background-color: #f9f9f9;
+    }
+
+    .status-badge {
+      display: inline-block;
+      padding: 5px 10px;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      background-color: #e8f5e9;
+      color: var(--success-color);
+    }
+
+    .loading {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 300px;
+    }
+
+    .loading:after {
+      content: " ";
+      display: block;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      border: 6px solid var(--primary-color);
+      border-color: var(--primary-color) transparent var(--primary-color) transparent;
+      animation: loading 1.2s linear infinite;
+    }
+
+    @keyframes loading {
+      0% {
+        transform: rotate(0deg);
+      }
+      100% {
+        transform: rotate(360deg);
+      }
+    }
+
+    .show-more {
+      display: block;
+      text-align: center;
+      padding: 10px;
+      margin-top: 10px;
+      background-color: #f5f5f5;
+      border-radius: 4px;
+      color: #666;
+      text-decoration: none;
+      cursor: pointer;
+    }
+
+    .show-more:hover {
+      background-color: #eeeeee;
+    }
+
+    .alert {
+      padding: 15px;
+      margin-bottom: 20px;
+      border-radius: 4px;
+      color: #664d03;
+      background-color: #fff3cd;
+      border: 1px solid #ffecb5;
+    }
+
+    .alert-error {
+      color: #842029;
+      background-color: #f8d7da;
+      border-color: #f5c2c7;
+    }
+
+    .alert-success {
+      color: #0f5132;
+      background-color: #d1e7dd;
+      border-color: #badbcc;
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    .pagination {
+      display: flex;
+      justify-content: center;
+      margin-top: 20px;
+    }
+    
+    .pagination button {
+      margin: 0 5px;
+      padding: 8px 12px;
+      border: 1px solid #ddd;
+      background-color: white;
+      cursor: pointer;
+      border-radius: 4px;
+    }
+    
+    .pagination button.active {
+      background-color: var(--primary-color);
+      color: white;
+      border-color: var(--primary-color);
+    }
+    
+    .pagination button:hover:not(.active) {
+      background-color: #f5f5f5;
+    }
+
+    @media (max-width: 768px) {
+      .search-form {
+        flex-direction: column;
+      }
+
+      .action-buttons {
+        flex-direction: column;
+      }
+
+      .btn {
+        width: 100%;
+      }
+      
+      .tabs {
+        flex-wrap: nowrap;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="header-content">
+      <a href="dashboard.html" class="logo">
+        <div class="logo-icon">M</div>
+        <span>MediCare Reminder</span>
+      </a>
+      <div class="user-menu">
+        <div class="user-profile">
+          <span id="user-name"></span>
+          <div class="user-avatar" id="user-initial"></div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <div class="nav-container">
+    <nav>
+      <a href="dashboard.html">หน้าหลัก</a>
+      <a href="patients.html">รายชื่อผู้ป่วย</a>
+      <a href="medications.html">สั่งยา</a>
+      <a href="history.html" class="active">ประวัติการรักษา</a>
+      <a href="reports.html">รายงาน</a>
+      <a href="settings.html">ตั้งค่า</a>
+    </nav>
+  </div>
+
+  <main>
+    <h1>ประวัติการรักษา</h1>
+    
+    <div id="alert-container" class="hidden"></div>
+    
+    <div class="search-box">
+      <h2>ค้นหาประวัติผู้ป่วย</h2>
+      <div class="search-form">
+        <div class="search-group">
+          <label for="patient-search">ค้นหาชื่อผู้ป่วยหรือรหัส HN...</label>
+          <input type="text" id="patient-search" placeholder="ค้นหาชื่อผู้ป่วยหรือรหัส HN...">
+        </div>
+        
+        <div class="search-group">
+          <label for="start-date">ตั้งแต่วันที่</label>
+          <input type="date" id="start-date">
+        </div>
+        
+        <div class="search-group">
+          <label for="end-date">ถึงวันที่</label>
+          <input type="date" id="end-date">
+        </div>
+      </div>
+      
+      <div class="search-button">
+        <button class="btn btn-primary" id="btn-search">ค้นหาประวัติ</button>
+      </div>
+    </div>
+    
+    <!-- Container to show loading state -->
+    <div id="loading" class="loading hidden"></div>
+    
+    <div id="patient-detail" class="hidden">
+      <div class="patient-card">
+        <div class="patient-header">
+          <h2 class="patient-name" id="patient-fullname"></h2>
+          <div class="patient-info" id="patient-info-container"></div>
+          <div class="patient-condition" id="patient-condition-container"></div>
+        </div>
+        
+        <div class="action-buttons">
+          <button class="btn btn-primary" id="btn-medical-history">ประวัติการรักษา</button>
+          <button class="btn btn-secondary" id="btn-medication-history">ประวัติการสั่งยา</button>
+          <button class="btn btn-secondary" id="btn-prescribe">สั่งยา</button>
+        </div>
+      </div>
+      
+      <div class="tabs">
+        <button class="tab active" data-tab="prescription-history">ประวัติการสั่งยา</button>
+        <button class="tab" data-tab="appointment-history">ประวัติการนัดหมาย</button>
+        <button class="tab" data-tab="lab-results">ผลตรวจทางห้องปฏิบัติการ</button>
+        <button class="tab" data-tab="medication-alert">ประวัติการแจ้งเตือนยา</button>
+      </div>
+      
+      <div id="prescription-history" class="tab-content active">
+        <table class="medication-table">
+          <thead>
+            <tr>
+              <th>วันที่สั่งยา</th>
+              <th>ชื่อยา</th>
+              <th>ขนาดและวิธีใช้</th>
+              <th>แพทย์ผู้สั่ง</th>
+              <th>สถานะ</th>
+            </tr>
+          </thead>
+          <tbody id="prescription-table-body">
+            <!-- Data will be populated by JavaScript -->
+          </tbody>
+        </table>
+        
+        <div id="prescription-pagination" class="pagination"></div>
+        <a href="#" class="show-more" id="show-more-prescriptions">แสดงเพิ่มเติม</a>
+      </div>
+      
+      <div id="appointment-history" class="tab-content">
+        <table class="medication-table">
+          <thead>
+            <tr>
+              <th>วันที่นัด</th>
+              <th>เวลา</th>
+              <th>ประเภทการนัด</th>
+              <th>แพทย์ผู้นัด</th>
+              <th>สถานะ</th>
+            </tr>
+          </thead>
+          <tbody id="appointment-table-body">
+            <!-- Data will be populated by JavaScript -->
+          </tbody>
+        </table>
+        
+        <div id="appointment-pagination" class="pagination"></div>
+      </div>
+      
+      <div id="lab-results" class="tab-content">
+        <table class="medication-table">
+          <thead>
+            <tr>
+              <th>วันที่ตรวจ</th>
+              <th>ประเภทการตรวจ</th>
+              <th>ผลการตรวจ</th>
+              <th>หมายเหตุ</th>
+            </tr>
+          </thead>
+          <tbody id="lab-results-table-body">
+            <!-- Data will be populated by JavaScript -->
+          </tbody>
+        </table>
+        
+        <div id="lab-results-pagination" class="pagination"></div>
+      </div>
+      
+      <div id="medication-alert" class="tab-content">
+        <table class="medication-table">
+          <thead>
+            <tr>
+              <th>วันที่</th>
+              <th>เวลา</th>
+              <th>ชื่อยา</th>
+              <th>สถานะ</th>
+            </tr>
+          </thead>
+          <tbody id="medication-alert-table-body">
+            <!-- Data will be populated by JavaScript -->
+          </tbody>
+        </table>
+        
+        <div id="medication-alert-pagination" class="pagination"></div>
+      </div>
+    </div>
+    
+    <div id="no-results" class="hidden">
+      <div class="patient-card">
+        <p style="text-align: center; padding: 20px;">ไม่พบข้อมูลที่ค้นหา กรุณาลองค้นหาใหม่อีกครั้ง</p>
+      </div>
+    </div>
+  </main>
+
+  <script>
+    // ตัวแปรสำหรับเก็บข้อมูล token และ API URL
+    const API_URL = 'http://127.0.0.1:3000/api';
+    let token = localStorage.getItem('token');
+    let currentUser = null;
+    let currentPatient = null;
+    
+    // ตัวแปรสำหรับเก็บข้อมูลการแบ่งหน้า
+    const pagination = {
+      prescriptions: {
+        currentPage: 1,
+        totalPages: 1,
+        limit: 10
+      },
+      appointments: {
+        currentPage: 1,
+        totalPages: 1,
+        limit: 10
+      },
+      labResults: {
+        currentPage: 1,
+        totalPages: 1,
+        limit: 10
+      },
+      medicationAlerts: {
+        currentPage: 1,
+        totalPages: 1,
+        limit: 10
+      }
+    };
+    
+    // ฟังก์ชันสำหรับแสดง alert
+    function showAlert(message, type = 'info') {
+      const alertContainer = document.getElementById('alert-container');
+      alertContainer.className = type === 'error' ? 'alert alert-error' : type === 'success' ? 'alert alert-success' : 'alert';
+      alertContainer.textContent = message;
+      alertContainer.classList.remove('hidden');
+      
+      // ซ่อน alert หลังจาก 5 วินาที
+      setTimeout(() => {
+        alertContainer.classList.add('hidden');
+      }, 5000);
+    }
+    
+    // ฟังก์ชันสำหรับแสดง/ซ่อนการโหลด
+    function toggleLoading(show) {
+      const loadingElement = document.getElementById('loading');
+      if (show) {
+        loadingElement.classList.remove('hidden');
+      } else {
+        loadingElement.classList.add('hidden');
+      }
+    }
+    
+    // ฟังก์ชันสำหรับตรวจสอบว่ามีการล็อกอินหรือไม่
+    function checkAuth() {
+      if (!token) {
+        window.location.href = 'index.html';
+        return false;
+      }
+      return true;
+    }
+    
+    // ฟังก์ชันสำหรับเรียกใช้ API
+    async function callAPI(endpoint, method = 'GET', data = null) {
+      try {
+        const options = {
+          method,
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+          }
+        };
+
+        if (data && (method === 'POST' || method === 'PUT')) {
+          options.body = JSON.stringify(data);
+        }
+        
+        const response = await fetch(`${API_URL}${endpoint}`, options);
+        
+        if (response.status === 401) {
+          localStorage.removeItem('token');
+          localStorage.removeItem('user');
+          showAlert('การเข้าสู่ระบบหมดอายุ กรุณาเข้าสู่ระบบใหม่', 'error');
+          setTimeout(() => {
+            window.location.href = 'index.html';
+          }, 2000);
+          return null;
+        }
+        
+        if (!response.ok) {
+          if (response.status === 404) {
+            return { error: 'ไม่พบข้อมูลที่ค้นหา' };
+          }
+          
+          let errorMessage;
+          try {
+            const errorData = await response.json();
+            errorMessage = errorData.message || `HTTP Error: ${response.status}`;
+          } catch {
+            errorMessage = `HTTP Error: ${response.status}`;
+          }
+          
+          throw new Error(errorMessage);
+        }
+
+        const responseData = await response.json();
+        return responseData;
+      } catch (error) {
+        console.error('API Error:', error);
+        showAlert(`เกิดข้อผิดพลาดในการเชื่อมต่อกับเซิร์ฟเวอร์: ${error.message}`, 'error');
+        return { error: error.message || 'เกิดข้อผิดพลาดในการเชื่อมต่อกับเซิร์ฟเวอร์' };
+      }
+    }
+    
+    // ฟังก์ชันสำหรับดึงข้อมูลผู้ใช้ปัจจุบัน
+    async function getCurrentUser() {
+      try {
+        const userData = await callAPI('/users/me');
+        return userData;
+      } catch (error) {
+        console.error('Error fetching current user:', error);
+        return null;
+      }
+    }
+    
+    // ฟังก์ชันสำหรับดึงข้อมูลประวัติการรักษาของผู้ป่วย
+    async function getMedicalHistory(patientId, page = 1, limit = pagination.appointments.limit) {
+      toggleLoading(true);
+      try {
+        const historyData = await callAPI(`/examination-history/${patientId}?page=${page}&limit=${limit}`);
+        toggleLoading(false);
+        
+        if (historyData && historyData.error) {
+          console.error('Error fetching medical history:', historyData.error);
+          showAlert('ไม่สามารถดึงข้อมูลประวัติการรักษาได้', 'error');
+          return null;
+        }
+        return historyData;
+      } catch (error) {
+        toggleLoading(false);
+        console.error('Error fetching medical history:', error);
+        showAlert('เกิดข้อผิดพลาดในการดึงข้อมูลประวัติการรักษา', 'error');
+        return null;
+      }
+    }
+    
+    // ฟังก์ชันสำหรับดึงข้อมูลประวัติการสั่งยาของผู้ป่วย
+    async function getMedicationHistory(patientId, page = 1, limit = pagination.prescriptions.limit) {
+      toggleLoading(true);
+      try {
+        const medHistoryData = await callAPI(`/patients/${patientId}/medications?page=${page}&limit=${limit}`);
+        toggleLoading(false);
+        
+        if (medHistoryData && medHistoryData.error) {
+          console.error('Error fetching medication history:', medHistoryData.error);
+          showAlert('ไม่สามารถดึงข้อมูลประวัติการสั่งยาได้', 'error');
+          return null;
+        }
+        
+        // อัปเดตข้อมูลการแบ่งหน้า
+        if (medHistoryData && medHistoryData.pagination) {
+          pagination.prescriptions.currentPage = medHistoryData.pagination.currentPage || 1;
+          pagination.prescriptions.totalPages = medHistoryData.pagination.totalPages || 1;
+        }
+        
+        return medHistoryData;
+      } catch (error) {
+        toggleLoading(false);
+        console.error('Error fetching medication history:', error);
+        showAlert('เกิดข้อผิดพลาดในการดึงข้อมูลประวัติการสั่งยา', 'error');
+        return null;
+      }
+    }
+    
+    // ฟังก์ชันสำหรับดึงข้อมูลประวัติการนัดหมายของผู้ป่วย
+    async function getAppointmentHistory(patientId, page = 1, limit = pagination.appointments.limit) {
+      toggleLoading(true);
+      try {
+        const appointmentData = await callAPI(`/patients/${patientId}/appointments?page=${page}&limit=${limit}`);
+        toggleLoading(false);
+        
+        if (appointmentData && appointmentData.error) {
+          console.error('Error fetching appointment history:', appointmentData.error);
+          showAlert('ไม่สามารถดึงข้อมูลประวัติการนัดหมายได้', 'error');
+          return null;
+        }
+        
+        // อัปเดตข้อมูลการแบ่งหน้า
+        if (appointmentData && appointmentData.pagination) {
+          pagination.appointments.currentPage = appointmentData.pagination.currentPage || 1;
+          pagination.appointments.totalPages = appointmentData.pagination.totalPages || 1;
+        }
+        
+        return appointmentData;
+      } catch (error) {
+        toggleLoading(false);
+        console.error('Error fetching appointment history:', error);
+        showAlert('เกิดข้อผิดพลาดในการดึงข้อมูลประวัติการนัดหมาย', 'error');
+        return null;
+      }
+    }
+    
+    // ฟังก์ชันสำหรับดึงข้อมูลผลการตรวจทางห้องปฏิบัติการของผู้ป่วย
+    async function getLabResults(patientId, page = 1, limit = pagination.labResults.limit) {
+      toggleLoading(true);
+      try {
+        const labData = await callAPI(`/patients/${patientId}/lab-results?page=${page}&limit=${limit}`);
+        toggleLoading(false);
+        
+        if (labData && labData.error) {
+          console.error('Error fetching lab results:', labData.error);
+          showAlert('ไม่สามารถดึงข้อมูลผลการตรวจทางห้องปฏิบัติการได้', 'error');
+          return null;
+        }
+        
+        // อัปเดตข้อมูลการแบ่งหน้า
+        if (labData && labData.pagination) {
+          pagination.labResults.currentPage = labData.pagination.currentPage || 1;
+          pagination.labResults.totalPages = labData.pagination.totalPages || 1;
+        }
+        
+        return labData;
+      } catch (error) {
+        toggleLoading(false);
+        console.error('Error fetching lab results:', error);
+        showAlert('เกิดข้อผิดพลาดในการดึงข้อมูลผลการตรวจทางห้องปฏิบัติการ', 'error');
+        return null;
+      }
+    }
+    
+    // ฟังก์ชันสำหรับดึงข้อมูลประวัติการแจ้งเตือนยาของผู้ป่วย
+    async function getMedicationAlerts(patientId, page = 1, limit = pagination.medicationAlerts.limit) {
+      toggleLoading(true);
+      try {
+        const alertData = await callAPI(`/medication-logs/${patientId}?page=${page}&limit=${limit}`);
+        toggleLoading(false);
+        
+        if (alertData && alertData.error) {
+          console.error('Error fetching medication alerts:', alertData.error);
+          showAlert('ไม่สามารถดึงข้อมูลประวัติการแจ้งเตือนยาได้', 'error');
+          return null;
+        }
+        
+        // อัปเดตข้อมูลการแบ่งหน้า
+        if (alertData && alertData.pagination) {
+          pagination.medicationAlerts.currentPage = alertData.pagination.currentPage || 1;
+          pagination.medicationAlerts.totalPages = alertData.pagination.totalPages || 1;
+        }
+        
+        return alertData;
+      } catch (error) {
+        toggleLoading(false);
+        console.error('Error fetching medication alerts:', error);
+        showAlert('เกิดข้อผิดพลาดในการดึงข้อมูลประวัติการแจ้งเตือนยา', 'error');
+        return null;
+      }
+    }
+    
+    // ฟังก์ชันสำหรับค้นหาผู้ป่วย
+    async function searchPatient() {
+      const searchText = document.getElementById('patient-search').value.trim();
+      const startDate = document.getElementById('start-date').value;
+      const endDate = document.getElementById('end-date').value;
+      
+      if (!searchText) {
+        showAlert('กรุณากรอกชื่อผู้ป่วยหรือรหัส HN', 'error');
+        return;
+      }
+      
+      toggleLoading(true);
+      document.getElementById('patient-detail').classList.add('hidden');
+      document.getElementById('no-results').classList.add('hidden');
+      
+      try {
+        let endpoint = `/patients?search=${encodeURIComponent(searchText)}`;
+        if (startDate) endpoint += `&startDate=${startDate}`;
+        if (endDate) endpoint += `&endDate=${endDate}`;
+        
+        // หรือลองดึงข้อมูลเป็นรายบุคคลโดยตรง (ถ้าค้นหาด้วย ID)
+        if (/^\d+$/.test(searchText)) {
+          // ถ้าเป็นตัวเลขล้วน ให้ลองค้นหาด้วย ID
+          const patientData = await callAPI(`/patients/${searchText}`);
+          if (patientData && !patientData.error) {
+            toggleLoading(false);
+            currentPatient = patientData.patient || patientData;
+            displayPatientDetails(currentPatient);
+            
+            // ล้างข้อมูลแท็บปัจจุบัน
+            clearTabContent();
+            
+            // ดึงประวัติการสั่งยา (แท็บเริ่มต้น)
+            const medHistory = await getMedicationHistory(currentPatient.id);
+            if (medHistory && medHistory.medications) {
+              displayMedicationHistory(medHistory.medications);
+              createPagination(
+                'prescription-pagination',
+                pagination.prescriptions.currentPage,
+                pagination.prescriptions.totalPages,
+                (page) => loadPrescriptionPage(page)
+              );
+            }
+            return;
+          }
+        }
+        
+        // ดำเนินการค้นหาแบบทั่วไป
+        const searchResult = await callAPI(endpoint);
+        toggleLoading(false);
+        
+        if (searchResult && searchResult.error) {
+          console.error('Error searching patient:', searchResult.error);
+          showAlert('เกิดข้อผิดพลาดในการค้นหาผู้ป่วย', 'error');
+          return;
+        }
+        
+        // ปรับการตรวจสอบโครงสร้างข้อมูลที่ได้รับ
+        const patients = searchResult.patients || searchResult;
+        
+        if (patients && (Array.isArray(patients) ? patients.length > 0 : true)) {
+          currentPatient = Array.isArray(patients) ? patients[0] : patients;
+          displayPatientDetails(currentPatient);
+          
+          // ล้างข้อมูลแท็บปัจจุบัน
+          clearTabContent();
+          
+          // ดึงประวัติการสั่งยา (แท็บเริ่มต้น)
+          const medHistory = await getMedicationHistory(currentPatient.id);
+          if (medHistory && medHistory.medications) {
+            displayMedicationHistory(medHistory.medications);
+            createPagination(
+              'prescription-pagination',
+              pagination.prescriptions.currentPage,
+              pagination.prescriptions.totalPages,
+              (page) => loadPrescriptionPage(page)
+            );
+          }
+        } else {
+          document.getElementById('no-results').classList.remove('hidden');
+          showAlert('ไม่พบข้อมูลผู้ป่วย', 'info');
+        }
+      } catch (error) {
+        toggleLoading(false);
+        console.error('Error searching patient:', error);
+        showAlert('เกิดข้อผิดพลาดในการค้นหาผู้ป่วย', 'error');
+      }
+    }
+    
+    // ฟังก์ชันสำหรับล้างข้อมูลในแท็บ
+    function clearTabContent() {
+      document.getElementById('prescription-table-body').innerHTML = '';
+      document.getElementById('appointment-table-body').innerHTML = '';
+      document.getElementById('lab-results-table-body').innerHTML = '';
+      document.getElementById('medication-alert-table-body').innerHTML = '';
+      
+      document.getElementById('prescription-pagination').innerHTML = '';
+      document.getElementById('appointment-pagination').innerHTML = '';
+      document.getElementById('lab-results-pagination').innerHTML = '';
+      document.getElementById('medication-alert-pagination').innerHTML = '';
+    }
+    
+    // ฟังก์ชันสำหรับโหลดหน้าประวัติการสั่งยา
+    async function loadPrescriptionPage(page) {
+      if (!currentPatient) return;
+      
+      const medHistory = await getMedicationHistory(currentPatient.id, page);
+      if (medHistory && medHistory.medications) {
+        displayMedicationHistory(medHistory.medications);
+        createPagination(
+          'prescription-pagination',
+          pagination.prescriptions.currentPage,
+          pagination.prescriptions.totalPages,
+          (page) => loadPrescriptionPage(page)
+        );
+      }
+    }
+    
+    // ฟังก์ชันสำหรับโหลดหน้าประวัติการนัดหมาย
+    async function loadAppointmentPage(page) {
+      if (!currentPatient) return;
+      
+      const appointments = await getAppointmentHistory(currentPatient.id, page);
+      if (appointments && appointments.appointments) {
+        displayAppointmentHistory(appointments.appointments);
+        createPagination(
+          'appointment-pagination',
+          pagination.appointments.currentPage,
+          pagination.appointments.totalPages,
+          (page) => loadAppointmentPage(page)
+        );
+      }
+    }
+    
+    // ฟังก์ชันสำหรับโหลดหน้าผลการตรวจทางห้องปฏิบัติการ
+    async function loadLabResultsPage(page) {
+      if (!currentPatient) return;
+      
+      const labResults = await getLabResults(currentPatient.id, page);
+      if (labResults && labResults.labResults) {
+        displayLabResults(labResults.labResults);
+        createPagination(
+          'lab-results-pagination',
+          pagination.labResults.currentPage,
+          pagination.labResults.totalPages,
+          (page) => loadLabResultsPage(page)
+        );
+      }
+    }
+    
+    // ฟังก์ชันสำหรับโหลดหน้าประวัติการแจ้งเตือนยา
+    async function loadMedicationAlertsPage(page) {
+      if (!currentPatient) return;
+      
+      const alerts = await getMedicationAlerts(currentPatient.id, page);
+      if (alerts && alerts.logs) {
+        displayMedicationAlerts(alerts.logs);
+        createPagination(
+          'medication-alert-pagination',
+          pagination.medicationAlerts.currentPage,
+          pagination.medicationAlerts.totalPages,
+          (page) => loadMedicationAlertsPage(page)
+        );
+      }
+    }
+    
+    // ฟังก์ชันสำหรับสร้างปุ่มแบ่งหน้า
+    function createPagination(containerId, currentPage, totalPages, callback) {
+      const container = document.getElementById(containerId);
+      container.innerHTML = '';
+      
+      if (totalPages <= 1) return;
+      
+      // สร้างปุ่มไปหน้าแรก
+      if (currentPage > 1) {
+        const firstBtn = document.createElement('button');
+        firstBtn.textContent = '«';
+        firstBtn.addEventListener('click', () => callback(1));
+        container.appendChild(firstBtn);
+      }
+      
+      // สร้างปุ่มไปหน้าก่อนหน้า
+      if (currentPage > 1) {
+        const prevBtn = document.createElement('button');
+        prevBtn.textContent = '‹';
+        prevBtn.addEventListener('click', () => callback(currentPage - 1));
+        container.appendChild(prevBtn);
+      }
+      
+      // กำหนดจำนวนปุ่มที่จะแสดง
+      let startPage = Math.max(1, currentPage - 2);
+      let endPage = Math.min(totalPages, startPage + 4);
+      
+      if (endPage - startPage < 4) {
+        startPage = Math.max(1, endPage - 4);
+      }
+      
+      // สร้างปุ่มตัวเลขหน้า
+      for (let i = startPage; i <= endPage; i++) {
+        const pageBtn = document.createElement('button');
+        pageBtn.textContent = i;
+        if (i === currentPage) {
+          pageBtn.classList.add('active');
+        } else {
+          pageBtn.addEventListener('click', () => callback(i));
+        }
+        container.appendChild(pageBtn);
+      }
+      
+      // สร้างปุ่มไปหน้าถัดไป
+      if (currentPage < totalPages) {
+        const nextBtn = document.createElement('button');
+        nextBtn.textContent = '›';
+        nextBtn.addEventListener('click', () => callback(currentPage + 1));
+        container.appendChild(nextBtn);
+      }
+      
+      // สร้างปุ่มไปหน้าสุดท้าย
+      if (currentPage < totalPages) {
+        const lastBtn = document.createElement('button');
+        lastBtn.textContent = '»';
+        lastBtn.addEventListener('click', () => callback(totalPages));
+        container.appendChild(lastBtn);
+      }
+    }
+    
+    // ฟังก์ชันสำหรับแสดงข้อมูลผู้ป่วย
+    function displayPatientDetails(patient) {
+      // แสดงส่วนรายละเอียดผู้ป่วย
+      document.getElementById('patient-detail').classList.remove('hidden');
+      
+      // อัปเดตชื่อผู้ป่วย
+      document.getElementById('patient-fullname').textContent = patient.fullName || `${patient.firstName || ''} ${patient.lastName || ''}`.trim();
+      
+      // อัปเดตข้อมูลพื้นฐาน
+      const patientInfo = document.getElementById('patient-info-container');
+      patientInfo.innerHTML = '';
+      
+      // เพิ่มข้อมูล HN
+      const hnSpan = document.createElement('span');
+      hnSpan.textContent = `HN: ${patient.hn || patient.id || '-'}`;
+      patientInfo.appendChild(hnSpan);
+      
+      // เพิ่มข้อมูลอายุ
+      if (patient.birthDate || patient.age) {
+        const ageSpan = document.createElement('span');
+        if (patient.age) {
+          ageSpan.textContent = `อายุ: ${patient.age} ปี`;
+        } else if (patient.birthDate) {
+          const birthDate = new Date(patient.birthDate);
+          const today = new Date();
+          let age = today.getFullYear() - birthDate.getFullYear();
+          const monthDiff = today.getMonth() - birthDate.getMonth();
+          if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
+            age--;
+          }
+          ageSpan.textContent = `อายุ: ${age} ปี`;
+        }
+        patientInfo.appendChild(ageSpan);
+      }
+      
+      // เพิ่มข้อมูลเพศ
+      if (patient.gender) {
+        const genderSpan = document.createElement('span');
+        genderSpan.textContent = `เพศ: ${patient.gender === 'MALE' || patient.gender === 'male' ? 'ชาย' : 'หญิง'}`;
+        patientInfo.appendChild(genderSpan);
+      }
+      
+      // อัปเดตโรคประจำตัว
+      const conditionContainer = document.getElementById('patient-condition-container');
+      conditionContainer.innerHTML = '';
+      
+      if (patient.medicalCondition) {
+        let conditions = [];
+        
+        if (typeof patient.medicalCondition === 'string') {
+          conditions = patient.medicalCondition.split(',');
+        } else if (Array.isArray(patient.medicalCondition)) {
+          conditions = patient.medicalCondition;
+        } else if (typeof patient.medicalCondition === 'object') {
+          conditions = Object.values(patient.medicalCondition);
+        }
+        
+        conditions.forEach(condition => {
+          if (!condition) return;
+          
+          const trimmedCondition = typeof condition === 'string' ? condition.trim() : condition;
+          let className = 'condition-tag';
+          
+          // ตรวจสอบประเภทของโรคและกำหนด class ตามประเภท
+          if (typeof trimmedCondition === 'string') {
+            if (trimmedCondition.toLowerCase().includes('เบาหวาน') || 
+                trimmedCondition.toLowerCase().includes('diabetes')) {
+              className += ' condition-diabetes';
+            } else if (trimmedCondition.toLowerCase().includes('ความดัน') || 
+                      trimmedCondition.toLowerCase().includes('hypertension')) {
+              className += ' condition-hypertension';
+            } else if (trimmedCondition.toLowerCase().includes('ไขมัน') || 
+                      trimmedCondition.toLowerCase().includes('cholesterol') ||
+                      trimmedCondition.toLowerCase().includes('cardio')) {
+              className += ' condition-cardio';
+            }
+          }
+          
+          const conditionTag = document.createElement('span');
+          conditionTag.className = className;
+          conditionTag.textContent = trimmedCondition;
+          conditionContainer.appendChild(conditionTag);
+        });
+      }
+    }
+    
+    // ฟังก์ชันสำหรับแสดงประวัติการสั่งยา
+    function displayMedicationHistory(medications) {
+      const tableBody = document.getElementById('prescription-table-body');
+      tableBody.innerHTML = '';
+      
+      if (!medications || medications.length === 0) {
+        tableBody.innerHTML = `
+          <tr>
+            <td colspan="5" style="text-align: center; padding: 20px;">ไม่พบประวัติการสั่งยา</td>
+          </tr>
+        `;
+        return;
+      }
+      
+      medications.forEach(med => {
+        const row = document.createElement('tr');
+        
+        const startDate = formatDate(med.startDate);
+        const name = med.name || med.medicationName || '';
+        const dosage = formatDosage(med);
+        const doctor = med.doctorName || med.prescribedBy || 'ไม่ระบุ';
+        const status = med.status || 'จ่ายยาแล้ว';
+        
+        row.innerHTML = `
+          <td>${startDate}</td>
+          <td>${name}</td>
+          <td>${dosage}</td>
+          <td>${doctor}</td>
+          <td><span class="status-badge">${status}</span></td>
+        `;
+        
+        tableBody.appendChild(row);
+      });
+    }
+    
+    // ฟังก์ชันสำหรับแสดงประวัติการนัดหมาย
+    function displayAppointmentHistory(appointments) {
+      const tableBody = document.getElementById('appointment-table-body');
+      tableBody.innerHTML = '';
+      
+      if (!appointments || appointments.length === 0) {
+        tableBody.innerHTML = `
+          <tr>
+            <td colspan="5" style="text-align: center; padding: 20px;">ไม่พบประวัติการนัดหมาย</td>
+          </tr>
+        `;
+        return;
+      }
+      
+      appointments.forEach(appointment => {
+        const row = document.createElement('tr');
+        
+        // จัดรูปแบบข้อมูล
+        const appointmentDate = formatDate(appointment.appointmentDate);
+        const appointmentTime = formatTime(appointment.appointmentTime || appointment.time);
+        const appointmentType = appointment.appointmentType || appointment.type || 'ตรวจรักษาทั่วไป';
+        const doctor = appointment.doctorName || appointment.doctor || 'ไม่ระบุ';
+        const status = getAppointmentStatusText(appointment.status);
+        
+        row.innerHTML = `
+          <td>${appointmentDate}</td>
+          <td>${appointmentTime}</td>
+          <td>${appointmentType}</td>
+          <td>${doctor}</td>
+          <td><span class="status-badge">${status}</span></td>
+        `;
+        
+        tableBody.appendChild(row);
+      });
+    }
+    
+    // ฟังก์ชันสำหรับแสดงผลการตรวจทางห้องปฏิบัติการ
+    function displayLabResults(results) {
+      const tableBody = document.getElementById('lab-results-table-body');
+      tableBody.innerHTML = '';
+      
+      if (!results || results.length === 0) {
+        tableBody.innerHTML = `
+          <tr>
+            <td colspan="4" style="text-align: center; padding: 20px;">ไม่พบข้อมูลผลการตรวจทางห้องปฏิบัติการ</td>
+          </tr>
+        `;
+        return;
+      }
+      
+      results.forEach(result => {
+        const row = document.createElement('tr');
+        
+        const testDate = formatDate(result.testDate || result.date);
+        const testType = result.testType || result.type || 'ไม่ระบุ';
+        const testResult = result.result || 'ไม่ระบุ';
+        const notes = result.notes || '-';
+        
+        row.innerHTML = `
+          <td>${testDate}</td>
+          <td>${testType}</td>
+          <td>${testResult}</td>
+          <td>${notes}</td>
+        `;
+        
+        tableBody.appendChild(row);
+      });
+    }
+    
+    // ฟังก์ชันสำหรับแสดงประวัติการแจ้งเตือนยา
+    function displayMedicationAlerts(alerts) {
+      const tableBody = document.getElementById('medication-alert-table-body');
+      tableBody.innerHTML = '';
+      
+      if (!alerts || alerts.length === 0) {
+        tableBody.innerHTML = `
+          <tr>
+            <td colspan="4" style="text-align: center; padding: 20px;">ไม่พบข้อมูลประวัติการแจ้งเตือนยา</td>
+          </tr>
+        `;
+        return;
+      }
+      
+      alerts.forEach(alert => {
+        const row = document.createElement('tr');
+        
+        const alertDate = formatDate(alert.logDate || alert.date || alert.time);
+        const alertTime = formatTime(alert.logTime || alert.time);
+        const medicationName = alert.medicationName || alert.medication || 'ไม่ระบุ';
+        const status = getMedicationLogStatus(alert.status);
+        
+        row.innerHTML = `
+          <td>${alertDate}</td>
+          <td>${alertTime}</td>
+          <td>${medicationName}</td>
+          <td><span class="status-badge">${status}</span></td>
+        `;
+        
+        tableBody.appendChild(row);
+      });
+    }
+    
+    // ฟังก์ชันสำหรับได้รับสถานะการแจ้งเตือนยา
+    function getMedicationLogStatus(status) {
+      if (!status) return 'ไม่ระบุ';
+      
+      switch (status.toUpperCase()) {
+        case 'TAKEN':
+          return 'ทานยาแล้ว';
+        case 'SKIPPED':
+          return 'ข้ามมื้อยา';
+        case 'DELAYED':
+          return 'ทานยาล่าช้า';
+        case 'SENT':
+          return 'ส่งการแจ้งเตือนแล้ว';
+        default:
+          return status;
+      }
+    }
+    
+    // ฟังก์ชันสำหรับได้รับสถานะการนัดหมาย
+    function getAppointmentStatusText(status) {
+      if (!status) return 'นัดหมายแล้ว';
+      
+      switch (status.toUpperCase()) {
+        case 'SCHEDULED':
+          return 'นัดหมายแล้ว';
+        case 'COMPLETED':
+          return 'ตรวจเสร็จแล้ว';
+        case 'CANCELLED':
+          return 'ยกเลิกนัด';
+        case 'RESCHEDULED':
+          return 'เลื่อนนัด';
+        case 'NO_SHOW':
+          return 'ไม่มาตามนัด';
+        default:
+          return status;
+      }
+    }
+    
+    // ฟังก์ชันสำหรับฟอร์แมตวันที่
+    function formatDate(dateString) {
+      if (!dateString) return '-';
+      
+      try {
+        const date = new Date(dateString);
+        if (isNaN(date.getTime())) return dateString; // ถ้าแปลงไม่ได้ให้คืนค่าเดิม
+        
+        const day = String(date.getDate()).padStart(2, '0');
+        const month = String(date.getMonth() + 1).padStart(2, '0');
+        const year = date.getFullYear() + 543; // แปลงเป็นปี พ.ศ.
+        
+        return `${day}/${month}/${year}`;
+      } catch (e) {
+        console.error('Error formatting date:', e);
+        return dateString;
+      }
+    }
+    
+    // ฟังก์ชันสำหรับฟอร์แมตเวลา
+    function formatTime(timeString) {
+      if (!timeString) return '-';
+      
+      try {
+        // กรณีที่เป็นรูปแบบ ISO datetime
+        if (timeString.includes('T')) {
+          const date = new Date(timeString);
+          if (isNaN(date.getTime())) return timeString; // ถ้าแปลงไม่ได้ให้คืนค่าเดิม
+          
+          return date.toLocaleTimeString('th-TH', {
+            hour: '2-digit',
+            minute: '2-digit'
+          });
+        }
+        
+        // กรณีที่เป็นเวลาในรูปแบบ HH:MM
+        if (timeString.includes(':')) {
+          return timeString;
+        }
+        
+        return timeString;
+      } catch (e) {
+        console.error('Error formatting time:', e);
+        return timeString;
+      }
+    }
+    
+    // ฟังก์ชันสำหรับแปลงรูปแบบยาเป็นหน่วย
+    function getUnitByForm(form) {
+      if (!form) return 'หน่วย';
+      
+      switch (form.toUpperCase()) {
+        case 'TABLET': return 'เม็ด';
+        case 'CAPSULE': return 'แคปซูล';
+        case 'SYRUP': return 'ขวด';
+        case 'INJECTION': return 'แอมพูล';
+        case 'CREAM': return 'หลอด';
+        case 'INHALER': return 'หลอด';
+        case 'DROPS': return 'ขวด';
+        case 'POWDER': return 'ซอง';
+        default: return 'หน่วย';
+      }
+    }
+    
+    // ฟังก์ชันสำหรับฟอร์แมตข้อมูลการใช้ยา
+    function formatDosage(medication) {
+      if (!medication) return '-';
+      
+      let dosageText = '';
+      
+      // ขนาดยา
+      if (medication.strength) {
+        dosageText += medication.strength + ' ';
+      }
+      
+      // วิธีใช้
+      if (medication.dosage) {
+        dosageText += medication.dosage + ' ';
+      }
+      
+      // ความถี่
+      if (medication.frequency) {
+        dosageText += medication.frequency;
+      }
+      
+      // จำนวนและระยะเวลา
+      if (medication.quantity) {
+        const unit = getUnitByForm(medication.form);
+        const days = getDurationDays(medication);
+        dosageText += `<br>จำนวน: ${medication.quantity} ${unit} (${days} วัน)`;
+      }
+      
+      return dosageText || '-';
+    }
+    
+    // ฟังก์ชันสำหรับคำนวณจำนวนวันตามการสั่งยา
+    function getDurationDays(medication) {
+      if (!medication) return 30; // ค่าเริ่มต้น
+      
+      if (medication.startDate && medication.endDate) {
+        const start = new Date(medication.startDate);
+        const end = new Date(medication.endDate);
+        if (!isNaN(start.getTime()) && !isNaN(end.getTime())) {
+          const diffTime = Math.abs(end - start);
+          const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+          return diffDays || 1;
+        }
+      }
+      
+      // กรณีที่มีระยะเวลาระบุโดยตรง
+      if (medication.duration) {
+        return medication.duration;
+      }
+      
+      // กรณีที่ไม่มีวันสิ้นสุด
+      if (medication.frequency && medication.quantity) {
+        // คำนวณจากความถี่และจำนวน
+        let dosesPerDay = 1;
+        
+        const freq = medication.frequency.toLowerCase();
+        if (freq.includes('2 ครั้ง') || freq.includes('twice') || freq.includes('bid')) {
+          dosesPerDay = 2;
+        } else if (freq.includes('3 ครั้ง') || freq.includes('three times') || freq.includes('tid')) {
+          dosesPerDay = 3;
+        } else if (freq.includes('4 ครั้ง') || freq.includes('four times') || freq.includes('qid')) {
+          dosesPerDay = 4;
+        }
+        
+        return Math.floor(medication.quantity / dosesPerDay) || 30;
+      }
+      
+      return 30; // ค่าเริ่มต้น 30 วัน
+    }
+    
+    // ฟังก์ชันสำหรับไปยังหน้าสั่งยา
+    function prescribeMedication() {
+      if (currentPatient && currentPatient.id) {
+        window.location.href = `prescribe.html?patientId=${currentPatient.id}`;
+      } else {
+        showAlert('กรุณาค้นหาผู้ป่วยก่อนทำการสั่งยา', 'error');
+      }
+    }
+    
+    // เมื่อโหลดหน้าเสร็จ
+    document.addEventListener('DOMContentLoaded', async function() {
+      // ตรวจสอบการล็อกอิน
+      if (!checkAuth()) return;
+      
+      try {
+        // ซ่อนรายละเอียดผู้ป่วยเมื่อเริ่มต้น
+        document.getElementById('patient-detail').classList.add('hidden');
+        document.getElementById('no-results').classList.add('hidden');
+        
+        // ดึงข้อมูลผู้ใช้ปัจจุบัน
+        const user = await getCurrentUser();
+        if (user) {
+          // แสดงชื่อผู้ใช้
+          document.getElementById('user-name').textContent = user.firstName ? 
+            `${user.title || ''} ${user.firstName} ${user.lastName}`.trim() : 'คุณหมอ';
+          
+          // ตั้งค่าตัวอักษรแรกในรูปโปรไฟล์
+          if (user.firstName) {
+            document.getElementById('user-initial').textContent = user.firstName.charAt(0).toUpperCase();
+          } else {
+            document.getElementById('user-initial').textContent = 'D';
+          }
+        }
+
+        // เพิ่ม event listener สำหรับค้นหาผู้ป่วย
+        document.getElementById('btn-search').addEventListener('click', searchPatient);
+        
+        // เพิ่ม event listener สำหรับกด Enter ในช่องค้นหา
+        document.getElementById('patient-search').addEventListener('keypress', function(e) {
+          if (e.key === 'Enter') {
+            searchPatient();
+          }
+        });
+        
+        // เพิ่ม event listener สำหรับเปลี่ยนแท็บ
+        const tabs = document.querySelectorAll('.tab');
+        tabs.forEach(tab => {
+          tab.addEventListener('click', async function() {
+            const tabName = this.getAttribute('data-tab');
+            
+            // ซ่อนเนื้อหาแท็บทั้งหมด
+            document.querySelectorAll('.tab-content').forEach(content => {
+              content.classList.remove('active');
+            });
+            
+            // ยกเลิกการเลือกแท็บทั้งหมด
+            document.querySelectorAll('.tab').forEach(t => {
+              t.classList.remove('active');
+            });
+            
+            // แสดงเนื้อหาแท็บที่เลือก
+            document.getElementById(tabName).classList.add('active');
+            
+            // เลือกแท็บปัจจุบัน
+            this.classList.add('active');
+            
+            // โหลดข้อมูลตามแท็บที่เลือก
+            if (currentPatient) {
+              switch(tabName) {
+                case 'prescription-history':
+                  const medHistory = await getMedicationHistory(currentPatient.id);
+                  if (medHistory && medHistory.medications) {
+                    displayMedicationHistory(medHistory.medications);
+                    createPagination(
+                      'prescription-pagination',
+                      pagination.prescriptions.currentPage,
+                      pagination.prescriptions.totalPages,
+                      (page) => loadPrescriptionPage(page)
+                    );
+                  }
+                  break;
+                  
+                case 'appointment-history':
+                  const appointments = await getAppointmentHistory(currentPatient.id);
+                  if (appointments && appointments.appointments) {
+                    displayAppointmentHistory(appointments.appointments);
+                    createPagination(
+                      'appointment-pagination',
+                      pagination.appointments.currentPage,
+                      pagination.appointments.totalPages,
+                      (page) => loadAppointmentPage(page)
+                    );
+                  }
+                  break;
+                  
+                case 'lab-results':
+                  const labResults = await getLabResults(currentPatient.id);
+                  if (labResults && labResults.labResults) {
+                    displayLabResults(labResults.labResults);
+                    createPagination(
+                      'lab-results-pagination',
+                      pagination.labResults.currentPage,
+                      pagination.labResults.totalPages,
+                      (page) => loadLabResultsPage(page)
+                    );
+                  }
+                  break;
+                  
+                case 'medication-alert':
+                  const alerts = await getMedicationAlerts(currentPatient.id);
+                  if (alerts && alerts.logs) {
+                    displayMedicationAlerts(alerts.logs);
+                    createPagination(
+                      'medication-alert-pagination',
+                      pagination.medicationAlerts.currentPage,
+                      pagination.medicationAlerts.totalPages,
+                      (page) => loadMedicationAlertsPage(page)
+                    );
+                  }
+                  break;
+              }
+            }
+          });
+        });
+        
+        // เพิ่ม event listener สำหรับปุ่มการกระทำต่างๆ
+        document.getElementById('btn-prescribe').addEventListener('click', prescribeMedication);
+        
+        document.getElementById('btn-medical-history').addEventListener('click', function() {
+          // เลือกแท็บประวัติการนัดหมาย
+          document.querySelector('.tab[data-tab="appointment-history"]').click();
+        });
+        
+        document.getElementById('btn-medication-history').addEventListener('click', function() {
+          // เลือกแท็บประวัติการสั่งยา
+          document.querySelector('.tab[data-tab="prescription-history"]').click();
+        });
+        
+        // เพิ่ม event listener สำหรับปุ่มแสดงเพิ่มเติม
+        document.getElementById('show-more-prescriptions').addEventListener('click', function(e) {
+          e.preventDefault();
+          
+          if (pagination.prescriptions.currentPage < pagination.prescriptions.totalPages) {
+            loadPrescriptionPage(pagination.prescriptions.currentPage + 1);
+          } else {
+            showAlert('ไม่มีข้อมูลเพิ่มเติมแล้ว', 'info');
+          }
+        });
+        
+        // ตรวจสอบว่ามีการระบุ ID ผู้ป่วยใน URL หรือไม่
+        const urlParams = new URLSearchParams(window.location.search);
+        const patientId = urlParams.get('patientId');
+        
+        if (patientId) {
+          // ดึงข้อมูลผู้ป่วยจาก API
+          try {
+            toggleLoading(true);
+            const patientData = await callAPI(`/patients/${patientId}`);
+            toggleLoading(false);
+            
+            if (patientData && !patientData.error) {
+              // ตรวจสอบโครงสร้างข้อมูลที่ได้รับจาก API
+              currentPatient = patientData.patient || patientData;
+              displayPatientDetails(currentPatient);
+              
+              // ดึงประวัติการสั่งยา
+              const medHistory = await getMedicationHistory(patientId);
+              if (medHistory && medHistory.medications) {
+                displayMedicationHistory(medHistory.medications);
+                createPagination(
+                  'prescription-pagination',
+                  pagination.prescriptions.currentPage,
+                  pagination.prescriptions.totalPages,
+                  (page) => loadPrescriptionPage(page)
+                );
+              }
+            } else {
+              showAlert('ไม่พบข้อมูลผู้ป่วย', 'error');
+            }
+          } catch (error) {
+            toggleLoading(false);
+            console.error('Error fetching patient data:', error);
+            showAlert('เกิดข้อผิดพลาดในการดึงข้อมูลผู้ป่วย', 'error');
+          }
+        }
+        
+      } catch (error) {
+        console.error('Error initializing history page:', error);
+        showAlert('เกิดข้อผิดพลาดในการโหลดหน้า', 'error');
+      }
+    });
+  </script>
+</body>
+</html>
